@@ -17,10 +17,10 @@ class CreateTransactionService {
     type,
     category: category_title,
   }: Request): Promise<Transaction> {
-    const transactionRepository = getRepository(Transaction);
-    const categoryRepository = getRepository(Category);
+    const transactionsRepository = getRepository(Transaction);
+    const categoriesRepository = getRepository(Category);
 
-    const existingCategory = await categoryRepository.findOne({
+    const existingCategory = await categoriesRepository.findOne({
       where: { title: category_title },
     });
 
@@ -28,23 +28,23 @@ class CreateTransactionService {
     if (existingCategory) {
       category_id = existingCategory.id;
     } else {
-      const category = categoryRepository.create({
+      const category = categoriesRepository.create({
         title: category_title,
       });
 
-      await categoryRepository.save(category);
+      await categoriesRepository.save(category);
 
       category_id = category.id;
     }
 
-    const transaction = transactionRepository.create({
+    const transaction = transactionsRepository.create({
       title,
       value,
       type,
       category_id,
     });
 
-    await transactionRepository.save(transaction);
+    await transactionsRepository.save(transaction);
 
     return transaction;
   }
